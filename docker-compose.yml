@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  icecast:
+    image: infiniteproject/icecast
+    container_name: radiob_icecast
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./icecast.xml:/usr/share/icecast/icecast.xml
+    networks:
+      - radio-network
+
+  liquidsoap:
+    image: savonet/liquidsoap:v2.1.4
+    container_name: radiob_liquidsoap
+    restart: always
+    depends_on:
+      - icecast
+    ports:
+      - "8005:8005" # For connecting live DJ source via Harbor
+    volumes:
+      - ./station.liq:/etc/liquidsoap/station.liq
+      - ./music:/music # Mount your local music folder here
+    command: /etc/liquidsoap/station.liq
+    networks:
+      - radio-network
+
+networks:
+  radio-network:
+    driver: bridge
