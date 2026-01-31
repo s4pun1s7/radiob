@@ -30,26 +30,63 @@ This station is built using a robust open-source audio streaming stack:
 
 ## 🚀 Getting Started
 
-Since this project relies on a specific ecosystem of tools, here is a high-level guide to setting up a similar environment:
+### 🐳 Deployment with Docker (Recommended)
 
-### Prerequisites
-1.  **Server**: A VPS or local machine to host Icecast and Liquidsoap.
-2.  **Source Client**: A computer running Mixxx for live broadcasting.
+This is the easiest way to run the station on any host (including Alpine Linux).
 
-### Setup Overview
+#### Prerequisites
+*   [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
+*   A directory with `.mp3` files for the auto-dj playlist.
 
-1.  **Install Icecast**:
-    *   Deploy Icecast on your server.
-    *   Configure `icecast.xml` with strong passwords for source authentication.
+#### Step-by-Step Guide
 
-2.  **Configure Liquidsoap**:
-    *   Install Liquidsoap on the same server.
-    *   Create a `.liq` script to define your radio logic (e.g., fallback to a playlist when no live DJ is connected).
-    *   Point the Liquidsoap output to your Icecast mount point.
+1.  **Clone the Repository**:
+    ```bash
+    git clone <repository-url>
+    cd radiob
+    ```
 
-3.  **Connect with Mixxx**:
-    *   In Mixxx preferences > Live Broadcasting, enter your Icecast server details.
-    *   Start streaming to take over the airwaves!
+2.  **Prepare Music**:
+    Create a `music` folder in the project root and add your audio files.
+    ```bash
+    mkdir music
+    # Copy your .mp3, .ogg, etc. files into ./music/
+    ```
+
+3.  **Start the Station**:
+    Run the services in the background:
+    ```bash
+    docker-compose up -d
+    ```
+
+4.  **Verify Status**:
+    Check if containers are running:
+    ```bash
+    docker-compose ps
+    ```
+    View logs to ensure everything is connected:
+    ```bash
+    docker-compose logs -f
+    ```
+    *You should see "Connection to icecast established" in the liquidsoap logs.*
+
+5.  **Listen**:
+    Open your browser or media player (VLC) and go to:
+    `http://<your-server-ip>:8000/radiob`
+
+### 🎧 Broadcasting Live (Mixxx)
+
+To switch from the auto-playlist to a live DJ set:
+
+1.  **Open Mixxx** (or any broadcasting software).
+2.  **Configure Live Broadcasting**:
+    *   **Type**: Icecast 2
+    *   **Host**: `<your-server-ip>`
+    *   **Port**: `8005` (Note: Connect to Liquidsoap, NOT Icecast directly!)
+    *   **Mount**: `/live`
+    *   **Login**: `source`
+    *   **Password**: `hackme` (Check `station.liq` for the source password)
+3.  **Go Live**: Enable "Live Broadcasting". Liquidsoap will automatically fade out the playlist and switch to your stream.
 
 ## 🤝 Community
 

@@ -22,6 +22,6 @@ stream = mksafe(fallback(track_sensitive=false, [live, radio]))
 # Sends the stream to the Icecast server defined in icecast.xml
 output.icecast(%mp3, 
   host = "icecast", port = 8000, 
-  password = "hackme", mount = "/radiob", 
+  password = "edno3edno2", mount = "/radiob", 
   name="RadioB", description="Independent Balkan Radio", 
   stream)
